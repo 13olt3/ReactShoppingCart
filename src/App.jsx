@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import Sidebar from "./components/Sidebar/sidebar.jsx";
+import Header from "./components/Header/header.jsx";
+import { Outlet } from "react-router";
+import { useState, useEffect } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [shopData, setShopData] = useState(null);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const limit = 13;
+    const fetchPromises = [];
+
+    for (let i = 1; i <= limit; i++) {
+      const url = `https://fakestoreapi.com/products/${i}`;
+      const promise = fetch(url).then((res) => {
+        return res.json();
+      });
+
+      fetchPromises.push(promise);
+    }
+
+    Promise.all(fetchPromises).then((allProducts) => {
+      console.log("All data fetched:", allProducts);
+      allProducts.splice(0, 1);
+      allProducts.splice(3, 1);
+      allProducts.splice(6, 1);
+      allProducts.splice(8, 1);
+
+      setShopData(allProducts);
+    });
+  }, []);
+
+  const updateCart = (newItem) => {
+    setCart(...cart, newItem);
+    // newItem has to be an item id as well as item quantity value
+  };
+  const contextOutlet = { shopData, cart, updateCart };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <Sidebar />
+      <Outlet context={contextOutlet} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
