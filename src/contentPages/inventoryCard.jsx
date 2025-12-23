@@ -1,11 +1,8 @@
 import styles from "./InventoryCard.module.css";
 import { useState } from "react";
-const InventoryCard = ({ itemName, itemImg }) => {
+const InventoryCard = ({ itemName, itemImg, cart, addToCart, itemId }) => {
   const [quant, setQuant] = useState(0);
 
-  const handleQuantChange = (e) => {
-    setQuant(e.target.value);
-  };
   const handleQuantUp = () => {
     let oldQuant = quant;
     setQuant(oldQuant + 1);
@@ -15,12 +12,22 @@ const InventoryCard = ({ itemName, itemImg }) => {
     setQuant(oldQuant - 1);
   };
 
+  const isInCart = cart.some((cartItem) => cartItem.id === itemId);
+
+  const cartUpdate = (itemId, quant) => {
+    addToCart({ id: itemId, quant: quant });
+  };
+
   return (
     <>
       <div className={styles.card}>
         {" "}
-        <img className={styles.cardImg} src={itemImg}></img>
+        <div
+          className={styles.cardImg}
+          style={{ backgroundImage: `url(${itemImg})` }}
+        ></div>
         <div className={styles.cardTitle}>{itemName}</div>
+        {isInCart && <div>item in cart</div>}
         <div className={styles.cardQuantity}>
           <button
             className={styles.quantityDown}
@@ -29,21 +36,16 @@ const InventoryCard = ({ itemName, itemImg }) => {
           >
             {`<`}{" "}
           </button>
-          <input
-            className={styles.quantityInput}
-            value={quant}
-            onChange={(e) => handleQuantChange(e)}
-            type="number"
-            min="0"
-            readOnly
-          ></input>
+
+          <div className={styles.quant}>Quantity: {quant}</div>
           <button
             className={styles.quantityUp}
             onClick={() => handleQuantUp()}
           >{`>`}</button>
         </div>
         <div>
-          <button>Add to cart</button>
+          <button onClick={() => cartUpdate(itemId, quant)}>Add to cart</button>
+          {isInCart && <button>Remove Item</button>}
         </div>
       </div>
     </>

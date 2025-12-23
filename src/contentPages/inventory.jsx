@@ -8,7 +8,7 @@ const shortenString = (input) => {
 };
 
 const Inventory = () => {
-  const { shopData } = useOutletContext();
+  const { shopData, cart, updateCart } = useOutletContext();
   return (
     <>
       <div className={styles.inventoryGrid}>
@@ -17,8 +17,12 @@ const Inventory = () => {
           ? shopData.map((inventoryItem) => (
               <Card
                 key={inventoryItem.id}
+                itemId={inventoryItem.id}
                 itemImg={inventoryItem.image}
                 itemName={shortenString(inventoryItem.title)}
+                cartTest={cart}
+                cart={cart}
+                addToCart={updateCart}
               />
             ))
           : ""}

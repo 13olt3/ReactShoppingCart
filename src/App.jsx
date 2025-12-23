@@ -32,15 +32,20 @@ function App() {
     });
   }, []);
 
-  const updateCart = (newItem) => {
-    setCart(...cart, newItem);
+  const updateCart = (input) => {
+    setCart((prevCart) => [...prevCart, input]);
     // newItem has to be an item id as well as item quantity value
   };
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
+
   const contextOutlet = { shopData, cart, updateCart };
 
   return (
     <>
-      <Header />
+      <Header cart={cart} />
       <Sidebar />
       <Outlet context={contextOutlet} />
     </>
