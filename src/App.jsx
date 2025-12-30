@@ -32,16 +32,27 @@ function App() {
     });
   }, []);
 
-  const updateCart = (input) => {
+  const updateCartAdd = (input) => {
     setCart((prevCart) => [...prevCart, input]);
+
     // newItem has to be an item id as well as item quantity value
+  };
+  const updateCartRemove = (input) => {
+    setCart((prevCart) => prevCart.filter((cartItem) => cartItem.id !== input));
+    //input is an itemId only
   };
 
   useEffect(() => {
     console.log(cart);
   }, [cart]);
 
-  const contextOutlet = { shopData, cart, updateCart };
+  const contextOutlet = {
+    shopData,
+    cart,
+    setCart,
+    updateCartAdd,
+    updateCartRemove,
+  };
 
   return (
     <>

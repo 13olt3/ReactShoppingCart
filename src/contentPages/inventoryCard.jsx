@@ -1,6 +1,14 @@
 import styles from "./InventoryCard.module.css";
 import { useState } from "react";
-const InventoryCard = ({ itemName, itemImg, cart, addToCart, itemId }) => {
+const InventoryCard = ({
+  itemName,
+  itemImg,
+  cart,
+  setCart,
+  addToCart,
+  itemId,
+  removeFromCart,
+}) => {
   const [quant, setQuant] = useState(0);
 
   const handleQuantUp = () => {
@@ -14,10 +22,27 @@ const InventoryCard = ({ itemName, itemImg, cart, addToCart, itemId }) => {
 
   const isInCart = cart.some((cartItem) => cartItem.id === itemId);
 
-  const cartUpdate = (itemId, quant) => {
-    addToCart({ id: itemId, quant: quant });
+  const cartUpdateAdd = (itemId, quant) => {
+    //if item not in cart, add to cart
+    if (!cart.some((cartItem) => cartItem.id === itemId)) {
+      addToCart({ id: itemId, quant: quant });
+    }
+    // else update the cart quant
+    else {
+      let updateQuant = cart.map((cartItem) => {
+        if (cartItem.id === itemId) {
+          return { id: itemId, quant: cartItem.quant + quant };
+        } else {
+          return cartItem;
+        }
+      });
+      setCart(updateQuant);
+    }
   };
 
+  const cartUpdateRemove = (itemId) => {
+    removeFromCart(itemId);
+  };
   return (
     <>
       <div className={styles.card}>
@@ -27,7 +52,13 @@ const InventoryCard = ({ itemName, itemImg, cart, addToCart, itemId }) => {
           style={{ backgroundImage: `url(${itemImg})` }}
         ></div>
         <div className={styles.cardTitle}>{itemName}</div>
-        {isInCart && <div>item in cart</div>}
+        {isInCart && (
+          <div>
+            {cart.find((cartItem) => cartItem.id === itemId).quant}{" "}
+            {cart.length === 1 ? "item" : "items"}{" "}
+            {cart.length === 1 ? "is" : "are"} in cart.
+          </div>
+        )}
         <div className={styles.cardQuantity}>
           <button
             className={styles.quantityDown}
@@ -41,11 +72,21 @@ const InventoryCard = ({ itemName, itemImg, cart, addToCart, itemId }) => {
           <button
             className={styles.quantityUp}
             onClick={() => handleQuantUp()}
+            role="button"
           >{`>`}</button>
         </div>
         <div>
-          <button onClick={() => cartUpdate(itemId, quant)}>Add to cart</button>
-          {isInCart && <button>Remove Item</button>}
+          <button
+            onClick={() => cartUpdateAdd(itemId, quant)}
+            disabled={quant === 0 ? true : false}
+          >
+            Add to cart
+          </button>
+          {isInCart && (
+            <button onClick={() => cartUpdateRemove(itemId)}>
+              Remove Item
+            </button>
+          )}
         </div>
       </div>
     </>

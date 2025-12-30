@@ -8,7 +8,8 @@ const shortenString = (input) => {
 };
 
 const Inventory = () => {
-  const { shopData, cart, updateCart } = useOutletContext();
+  const { shopData, cart, setCart, updateCartAdd, updateCartRemove } =
+    useOutletContext();
   return (
     <>
       <div className={styles.inventoryGrid}>
@@ -20,9 +21,10 @@ const Inventory = () => {
                 itemId={inventoryItem.id}
                 itemImg={inventoryItem.image}
                 itemName={shortenString(inventoryItem.title)}
-                cartTest={cart}
                 cart={cart}
-                addToCart={updateCart}
+                setCart={setCart}
+                addToCart={updateCartAdd}
+                removeFromCart={updateCartRemove}
               />
             ))
           : ""}

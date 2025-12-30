@@ -1,0 +1,15 @@
+.cart {
+  display: grid;
+  grid-template-rows: 1fr 5fr;
+
+  overflow-y: auto;
+  max-height: 75vh;
+
+  justify-items: center;
+}
+
+.cartTiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
